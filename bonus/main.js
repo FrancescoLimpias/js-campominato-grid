@@ -1,15 +1,17 @@
-// Configuration
+// Game
 let cellsN = 100;
 let difficulty = "easy";
+let timer, timerSeconds;
 
 // References
 const difficultySelector = document.getElementById("input-difficulty");
 const startButton = document.getElementById("button-start");
+const timerElement = document.getElementById("timer");
 const gridElement = document.getElementById("grid");
 
 // Link UI with JS
 difficultySelector.addEventListener("click", updateDifficulty);
-startButton.addEventListener("click", generateGrid);
+startButton.addEventListener("click", startGame);
 
 // Difficulty
 function updateDifficulty() {
@@ -27,7 +29,16 @@ function updateDifficulty() {
     }
 }
 
-// Generation logic
+// Game logics
+function startGame() {
+    generateGrid();
+    startTimer();
+}
+function stopGame() {
+    stopTimer();
+}
+
+// Grid logics
 function generateGrid() {
 
     // Clear grid
@@ -44,7 +55,7 @@ function generateGrid() {
 
         // Create cell
         const cell = mouldCell.cloneNode(); //clone
-        cell.insertAdjacentHTML("beforeend", "<span>" + cellN + "</span>"); //insert number
+        cell.insertAdjacentHTML("beforeend", "<span>" /* + cellN  */ + "</span>"); //insert number
 
         // Add click response
         cell.addEventListener("click", function () {
@@ -72,4 +83,31 @@ function clearGrid() {
     while (gridElement.firstChild) {
         gridElement.removeChild(gridElement.firstChild);
     }
+}
+
+// Timer logics
+function startTimer() {
+
+    // Clear eventual previous timer
+    if (timer) {
+        stopTimer();
+    }
+
+    // Update timer counters
+    timerSeconds = 0;
+    timer = setInterval(function () {
+        timerSeconds++;
+        updateWatch();
+    }, 1000);
+
+    // Display new timer
+    updateWatch();
+}
+function updateWatch() {
+    const shownSeconds = (timerSeconds + 60) % 60;
+    const shownMinutes = parseInt(timerSeconds / 60);
+    timerElement.innerHTML = `${shownMinutes}:${shownSeconds}`;
+}
+function stopTimer() {
+    clearInterval(timer);
 }
